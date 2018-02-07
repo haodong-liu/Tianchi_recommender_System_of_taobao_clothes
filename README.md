@@ -58,39 +58,39 @@ TFIDF的主要思想是：如果某个词或短语在一篇文章中出现的频
 
 **逆向文件频率**（inverse document frequency，IDF）是一个词语普遍重要性的度量。某一特定词语的IDF，可以由总文件数目除以包含该词语之文件的数目，再将得到的商取对数得到：
 
-![image](C:\Users\76176\Pictures\imggh\6.jpg)
+![image](https://github.com/haodong-liu/-/blob/master/pic/6.jpg)
 
 其中|D|：语料库中的文件总数|{j : ti∈∈dj }|：包含词语的文件数目（即的文件数目）如果该词语不在语料库中，就会导致分母为零，因此一般情况下使用1+|{j : ti∈∈dj }|作为分母。之后相称得到TF_IDF值。
 
 根据我们的题目要求给出计算公式：
 
-![image](C:\Users\76176\Pictures\imggh\7.png)
-![image](C:\Users\76176\Pictures\imggh\8.png)
-![image](C:\Users\76176\Pictures\imggh\9.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/7.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/8.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/9.png)
 
 这样我们可以得到一个商品所有特征值的TF_IDF，值越大，该特征对于该商品的重要程度越大。(其中所有的分母都+1，保证分母不为0)。
 
 计算出这些TF_IDF，在用余弦像是度来测算两个商品的相似程度，下面介绍一下余弦相似度算法，对于两个向量来说，之间的夹角越小，这两个向量靠的越近，针对我们的额题目，就是商品的特征向量之间，如果计算出来的夹角的余弦值越接近于1，那么这两个商品之间的相似度就越高。如果这两个商品不同类，那么存在以下可能，①两个商品是同一家店铺的不同类商品，属于同一个系列或者有着同一种描述，那就有可能是搭配的，如figure2所示。②有可能这两种商品不在同一家店中，但可能具有同种用途下互补的功能，比如沙滩裤，沙滩鞋，比基尼等商品都会有提到海边，沙滩，休闲这样的字眼，那这些商品之间就可能有搭配的潜在可能。 
 
-![image](C:\Users\76176\Pictures\imggh\10.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/10.png)
 
 
 这里有一个问题，这个余弦值到底去多少，那才算是搭配的，这里经过对参数的控制，我们得出的余弦值在0.4~0.6之间，得出的结果还是可以的。具体的试验中，由于商品舒服过多，要基于30万件商品找到所有的搭配过于复杂，在计算TF_IDF是也要消耗大量时间，我们把数据集缩小，得出的结果也是比较令人欣慰的，所以我们大胆推测，当数据集变大时，这样的话，算出的结果就越好。
 
 针对这个模型，我们也给出了一个评价函数：
-![image](C:\Users\76176\Pictures\imggh\11.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/11.png)
 
 其中Vsim是候选商品的待预测商品之间的TF_IDF文本相似度，我们找到余弦相似度在0.4·0.6之间的商品，且S2较大的商品对，认为是搭配的。纳入搭配商品集合中。
 ### 3.相似商品达人搭配表中匹配
 这个模型的逻辑是这样的，在那么多的服装中，我们找到了与一件衣服A相似的商品B,C,D…
 而恰巧，这些B,C,D都在达人商品集合中出现过，存在与他们搭配的商品，那么巧了，这个衣服A是不是就能和与B,C,D搭配的商品搭配呢，答案是肯定的，如Figure 3所示。Figure3的思路是解释这个方法是否可行，我们做的时候，是反过来做的，我们先找与待测商品A相似的其他同类商品B,C,D…之后通过找B,C,D…在达人搭配表中的搭配商品，赋值给商品A的搭配商品（已经排除其他不可能的因素）。那我们这个模型就可以借助上一个模型计算商品间搭配程度的算法，来找到，与之相似的其他商品，这样，我们借助这些商品的ID直接去【2】达人搭配套餐表中找这些商品的搭配商品，这样就能找到与待测商品相搭配的商品。
-![image](C:\Users\76176\Pictures\imggh\12.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/12.png)
 这个模型所用到控制相似程度的余弦相似度我们控制在了0.75~1之间，因为这些都是找同类商品中相似商品，这样相似程度越高就是越相似的，不用考虑不同类之间的可能存在的商品描述有差异的问题。对于该问题，我们没有给出评价函数，是因为这些搭配的商品是从达人搭配表中直接获取的模式肯定搭配的，只可能是在找相似商品的时候，余弦相似度存在问题，那我们就按照余弦相似度排序就好了，越相似的商品的搭配商品，越搭配。
 ## 三、实验结果
 我们找出了一些可以搭配的商品对，如Figure4所示：
-![image](C:\Users\76176\Pictures\imggh\13.png)
-![image](C:\Users\76176\Pictures\imggh\14.png)
-![image](C:\Users\76176\Pictures\imggh\15.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/13.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/14.png)
+![image](https://github.com/haodong-liu/-/blob/master/pic/15.png)
 
 由于电脑性能的限制，我们没有办法做到将所有待测商品都测算一遍，然后去计算我们这个方法的准确程度，所以只能算是有了一点点的小成果，我们还会去完善我们的方法。
 ## 四、总结
