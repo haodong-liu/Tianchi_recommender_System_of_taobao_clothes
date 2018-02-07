@@ -26,7 +26,7 @@
 
 官方给出了评价函数：
 
-![image](-/pic/1.jpg)
+![image](https://github.com/haodong-liu/-/blob/master/pic/1.jpg)
 
 其中n表示答案集中的商品的数量，p(k)表示在K截断之前的预测准确率，当第k个商品在答案集合中时，Δ(k)为1，否则为0。
 对每个商品的api@200在待预测商品集合下求平均值得到最终评测值map@200：![image](C:\Users\76176\Pictures\imggh\2.jpg)
